@@ -1,0 +1,25 @@
+name: Create Windows Remote Desktop with Chrome Remote Desktop
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Set up Chrome Remote Desktop
+        run: |
+          powershell.exe -Command "chrome-remote-desktop.exe --setup --pin $env:CHROME_REMOTE_DESKTOP_PIN"
+
+      - name: Start Chrome Remote Desktop
+        run: |
+          powershell.exe -Command "chrome-remote-desktop.exe --start"
+
+      - name: Create SSH tunnel to Chrome Remote Desktop
+        run: |
+          powershell.exe -Command "ssh -N -T -R 8080:localhost:3389 $env:CHROME_REMOTE_DESKTOP_SSH"
+
+      - name: Output remote Windows desktop URL
+        run: echo "Remote Windows desktop URL: http://localhost:8080"
